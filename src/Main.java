@@ -1,4 +1,5 @@
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
@@ -26,42 +27,69 @@ public class Main {
     }
 
     private static void llegirProductes() throws IOException, ClassNotFoundException {
-        FileInputStream fis = new FileInputStream("productes.dat");
-        ObjectInputStream ois = new ObjectInputStream(fis);
-        while (fis.available()>0) {
-            Producte p = (Producte) ois.readObject();
-            System.out.println(p.toString());
+        File f = new File("productes.dat");
+        if (!f.exists()) {
+            System.out.println("El fitxer productes.dat no existeix. Si us plau, desa productes primer.");
+
         }
-        ois.close();
-        fis.close();
+        else {
 
+            FileInputStream fis = new FileInputStream("productes.dat");
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            while (fis.available() > 0) {
+                Producte p = (Producte) ois.readObject();
+                System.out.println(p.toString());
+            }
+            ois.close();
+            fis.close();
+        }
     }
 
-    public static void desarProductes() throws IOException {
+    public static void desarProductes() throws IOException, ClassNotFoundException {
+        File f = new File("productes.dat");
+        ArrayList<Producte> productes = (ArrayList<Producte>) new ArrayList<Producte>();
+
+        if (!f.exists()) {
+            System.out.println("El fitxer productes.dat no existeix. Creant un de nou...");
+            FileOutputStream fos = new FileOutputStream("productes.dat");
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+        }
+        else {
 
 
-        FileOutputStream fos = null;
-        ObjectOutputStream oos = null;
-        ObjectInputStream ois = null;
+            FileInputStream fis = new FileInputStream("productes.dat");
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            while (fis.available() > 0) {
+                Producte p = (Producte) ois.readObject();
+                productes.add(p);
+            }
+            ois.close();
+            fis.close();
+        }
+            FileOutputStream fos = null;
+            ObjectOutputStream oos = null;
 
 
-        fos = new FileOutputStream("productes.dat");
-        oos = new ObjectOutputStream(fos);
+            fos = new FileOutputStream("productes.dat");
+            oos = new ObjectOutputStream(fos);
 
-        Producte p1 = new Producte("Llibre", 15.99, 10);
-        Producte p2 = new Producte("Llapis", 0.99, 100);
-        Producte p3 = new Producte("Quadern", 2.49, 50);
+            Producte p1 = new Producte("Llibre", 15.99, 10);
+            Producte p2 = new Producte("Llapis", 0.99, 100);
+            Producte p3 = new Producte("Quadern", 2.49, 50);
 
-        oos.writeObject(p1);
-        oos.writeObject(p2);
-        oos.writeObject(p3);
+            productes.add(p1);
+            productes.add(p2);
+            productes.add(p3);
+            for (Producte p : productes) {
+                oos.writeObject(p);
+            }
 
-        oos.close();
-        fos.close();
+            oos.close();
+            fos.close();
 
-        System.out.println("Productes desats correctament a productes.dat");
-
+            System.out.println("Productes desats correctament a productes.dat");
+        }
     }
 
-}
+
 
